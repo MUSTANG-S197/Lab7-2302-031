@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>七彩灯光动画</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #222;
+            font-family: Arial, sans-serif;
+        }
+        
+        .container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+        
+        .light {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            margin: 0 15px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            transition: all 0.3s ease;
+            background-color: #333; 
+        }
+        
+        .controls {
+            display: flex;
+            gap: 20px;
+        }
+        
+        button {
+            padding: 12px 24px;
+            font-size: 16px;
+            border: none;
+            border-radius: 30px;
+            background-color: #4a4a4a;
+            color: white;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        button:hover {
+            background-color: #333;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        h1 {
+            color: #fff;
+            margin-bottom: 30px;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+    </style>
+</head>
+<body>
+    <h1>七彩灯光效果</h1>
+    <div class="container" id="lightContainer">
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+        <div class="light"></div>
+    </div>
+    <div class="controls">
+        <button id="startBtn">启动</button>
+        <button id="stopBtn">停止</button>
+    </div>
+
+    <script>
+        const lights = document.querySelectorAll('.light');
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        let animationInterval;
+        let isAnimating = false;
+        
+        const colors = [
+            '#FF0000',
+            '#FF7F00',
+            '#FFFF00'
+,           '#00FF00',
+            '#0000FF' 
+            '#4B0082', 
+            '#9400D3'  
+      ];
+        
+        function getRandomColors() {
+            let availableColors = [...colors];
+            let randomColors = [];
+            
+            for (let i = 0; i < 7; i++) {
+                const randomIndex = Math.floor(Math.random() * availableColors.length);
+                randomColors.push(availableColors[randomIndex]);
+                availableColors.splice(randomIndex, 1);
+            }
+            
+            return randomColors;
+        }
+        
+        function updateLights() {
+            const randomColors = getRandomColors();
+            
+            lights.forEach((light, index) => {
+                if (isAnimating) {
+                    light.style.backgroundColor = index % 2 === 0 ? randomColors[index] : '#333';
+                    light.style.boxShadow = index % 2 === 0 ? `0 0 20px ${randomColors[index]}` : '0 0 10px rgba(0,0,0,0.5)';
+                    
+                    setTimeout(() => {
+                        if (isAnimating) {
+                            light.style.backgroundColor = index % 2 === 0 ? '#333' : randomColors[index];
+                            light.style.boxShadow = index % 2 === 0 ? '0 0 10px rgba(0,0,0,0.5)' : `0 0 20px ${randomColors[index]}`;
+                        }
+                    }, 500);
+                } else {
+                    light.style.backgroundColor = randomColors[index];
+                    light.style.boxShadow = `0 0 20px ${randomColors[index]}`;
+                }
+            });
+        }
+        
+        function startAnimation() {
+            if (!isAnimating) {
+                isAnimating = true;
+                updateLights();
+                animationInterval = setInterval(updateLights, 1000);
+            }
+        }
+        
+        function stopAnimation() {
+            isAnimating = false;
+            clearInterval(animationInterval);
+            
+            const randomColors = getRandomColors();
+            lights.forEach((light, index) => {
+                light.style.backgroundColor = randomColors[index];
+                light.style.boxShadow = `0 0 20px ${randomColors[index]}`;
+            });
+        }
+        
+        startBtn.addEventListener('click', startAnimation);
+        stopBtn.addEventListener('click', stopAnimation);
+        
+        updateLights();
+    </script>
+</body>
+</html>
